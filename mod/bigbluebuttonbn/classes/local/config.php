@@ -112,6 +112,13 @@ class config {
             'welcome_default' => '',
             'default_dpa_accepted' => false,
             'poll_interval' => bigbluebutton_proxy::DEFAULT_POLL_INTERVAL,
+            'moderatorscanjoinearly_editable' => false,
+            'moderatorscanjoinearly_default' => false,
+            'calendareventoffset_editable' => false,
+            'calendareventoffset_default' => '0',
+            'hidepresentationfile_editable' => false,
+            'hidepresentationfile_default' => false,
+
         ];
     }
 
@@ -219,6 +226,12 @@ class config {
             'welcome_editable' => self::get('welcome_editable'),
             'poll_interval' => self::get('poll_interval'),
             'guestaccess_enabled' => self::get('guestaccess_enabled'),
+            'moderatorscanjoinearly_editable' => self::get('moderatorscanjoinearly_editable'),
+            'moderatorscanjoinearly_default' => self::get('moderatorscanjoinearly_default'),
+            'calendareventoffset_editable' => self::get('calendareventoffset_editable'),
+            'calendareventoffset_default' => self::get('calendareventoffset_default'),
+            'hidepresentationfile_editable' => self::get('hidepresentationfile_editable'),
+            'hidepresentationfile_default' => self::get('hidepresentationfile_default'),
         ];
     }
 

@@ -676,6 +676,29 @@ class settings {
             );
 
             $preuploadsettings->add($filemanager);
+
+            $item = new admin_setting_configcheckbox(
+                'bigbluebuttonbn_hidepresentationfile_editable',
+                get_string('config_hidepresentationfile_editable', 'bigbluebuttonbn'),
+                get_string('config_hidepresentationfile_editable_description', 'bigbluebuttonbn'),
+                0
+            );
+            $this->add_conditional_element(
+                'hidepresentationfile_editable',
+                $item,
+                $preuploadsettings
+            );
+            $item = new admin_setting_configcheckbox(
+                'bigbluebuttonbn_hidepresentationfile_default',
+                get_string('config_hidepresentationfile_default', 'bigbluebuttonbn'),
+                get_string('config_hidepresentationfile_default_description', 'bigbluebuttonbn'),
+                0
+            );
+            $this->add_conditional_element(
+                'hidepresentationfile_default',
+                $item,
+                $preuploadsettings
+            );
         }
         $this->admin->add($this->parent, $preuploadsettings);
     }
@@ -760,6 +783,51 @@ class settings {
             );
             $this->add_conditional_element(
                 'participant_moderator_default',
+                $item,
+                $participantsettings
+            );
+            $item = new admin_setting_configcheckbox(
+                'bigbluebuttonbn_moderatorscanjoinearly_editable',
+                get_string('config_moderatorscanjoinearly_editable', 'bigbluebuttonbn'),
+                get_string('config_moderatorscanjoinearly_editable_description', 'bigbluebuttonbn'),
+                0
+            );
+            $this->add_conditional_element(
+                'moderatorscanjoinearly_editable',
+                $item,
+                $participantsettings
+            );
+            $item = new admin_setting_configcheckbox(
+                'bigbluebuttonbn_moderatorscanjoinearly_default',
+                get_string('config_moderatorscanjoinearly_default', 'bigbluebuttonbn'),
+                get_string('config_moderatorscanjoinearly_default_description', 'bigbluebuttonbn'),
+                0
+            );
+            $this->add_conditional_element(
+                'moderatorscanjoinearly_default',
+                $item,
+                $participantsettings
+            );
+            $item = new admin_setting_configcheckbox(
+                'bigbluebuttonbn_calendareventoffset_editable',
+                get_string('config_calendareventoffset_editable', 'bigbluebuttonbn'),
+                get_string('config_calendareventoffset_editable_description', 'bigbluebuttonbn'),
+                0
+            );
+            $this->add_conditional_element(
+                'calendareventoffset_editable',
+                $item,
+                $participantsettings
+            );
+            $item = new admin_setting_configtext(
+                'bigbluebuttonbn_calendareventoffset_default',
+                get_string('config_calendareventoffset_default', 'bigbluebuttonbn'),
+                get_string('config_calendareventoffset_default_description', 'bigbluebuttonbn'),
+                0,
+                PARAM_INT
+            );
+            $this->add_conditional_element(
+                'calendareventoffset_default',
                 $item,
                 $participantsettings
             );

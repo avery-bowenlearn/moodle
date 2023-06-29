@@ -861,7 +861,12 @@ EOF;
      * @return array|null
      */
     public function get_presentation(): ?array {
-        return $this->do_get_presentation_with_nonce(false);
+        // Check if hidepresentationfile is true, and if the user us NOT a moderator or admin, if so, don't show the presentation file.
+        if ($this->get_instance_var('hidepresentationfile') && !$this->is_admin() && !$this->is_moderator()) {
+            return [];
+        }
+        $presentation = $this->do_get_presentation_with_nonce(false);
+        return $presentation;
     }
 
     /**
@@ -935,7 +940,7 @@ EOF;
      * @return bool
      */
     public function is_currently_open(): bool {
-        if ($this->before_start_time()) {
+        if ($this->before_start_time() && !$this->user_can_join_early()) {
             return false;
         }
 
@@ -957,6 +962,20 @@ EOF;
         }
 
         return (bool) $this->get_instance_var('wait');
+    }
+
+    /**
+     * Whether the user can join regardless of open time.
+     *
+     * @return bool
+     */
+    public function user_can_join_early(): bool {
+        $moderatorscanjoinearly = $this->get_instance_var('moderatorscanjoinearly') == 1;
+        if ($this->user_can_force_join() && $moderatorscanjoinearly) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

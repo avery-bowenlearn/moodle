@@ -485,6 +485,35 @@ function xmldb_bigbluebuttonbn_upgrade($oldversion = 0) {
     }
     // Automatically generated Moodle v4.1.0 release upgrade line.
     // Put any upgrade step following this.
+    
+    
+    if ($oldversion < 2022112806) {
+
+        // Define field moderatorscanjoinearly to be added to bigbluebuttonbn.
+        $table = new xmldb_table('bigbluebuttonbn');
+
+        $field = new xmldb_field('moderatorscanjoinearly', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'wait');
+        // Conditionally launch add field moderatorscanjoinearly.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('calendareventoffset', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, '0', 'closingtime');
+        // Conditionally launch add field calendareventoffset.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('hidepresentationfile', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'presentation');
+        // Conditionally launch add field hidepresentationfile.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Bigbluebuttonbn savepoint reached.
+        upgrade_mod_savepoint(true, 2022112803, 'bigbluebuttonbn');
+    }
+
 
     return true;
 }

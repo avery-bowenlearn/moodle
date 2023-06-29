@@ -83,6 +83,9 @@ class recording_row_playback implements renderable, templatable {
                         'data-action' => 'play',
                         'data-target' => $playback['type'],
                     ];
+                    if ($playback['type'] == 'statistics') {
+                        $linkattributes['class'] = 'btn btn-sm btn-info';
+                    }
                     $actionlink = new \action_link(
                         $playback['url'],
                         recording_data::type_text($playback['type']),

@@ -121,6 +121,8 @@ class meeting_info extends external_api {
                 'meetingid' => new external_value(PARAM_RAW, 'Meeting id'),
                 'openingtime' => new external_value(PARAM_INT, 'Opening time', VALUE_OPTIONAL),
                 'closingtime' => new external_value(PARAM_INT, 'Closing time', VALUE_OPTIONAL),
+                'startingtime' => new external_value(PARAM_INT, 'Starting time', VALUE_OPTIONAL),
+                'hidepresentations' => new external_value(PARAM_BOOL, 'Hide presentations', VALUE_OPTIONAL),
                 'statusrunning' => new external_value(PARAM_BOOL, 'Status running', VALUE_OPTIONAL),
                 'statusclosed' => new external_value(PARAM_BOOL, 'Status closed', VALUE_OPTIONAL),
                 'statusopen' => new external_value(PARAM_BOOL, 'Status open', VALUE_OPTIONAL),

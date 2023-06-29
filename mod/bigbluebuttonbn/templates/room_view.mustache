@@ -26,6 +26,7 @@
        "statusclosed": true,
        "statusclosed": false,
        "openingtime": 123456789,
+       "startingtime": 123556989,
        "closingtime": 987654321
     }
 }}
@@ -35,22 +36,30 @@
     <div id="bigbluebuttonbn-information">
         <div id="bigbluebuttonbn-status-bar" class="text-wrap">
             {{#statusrunning}}
-                <div>
+                <div class="alert alert-info">
                     <span class="font-weight-bold">{{#str}}view_message_session_started_at, mod_bigbluebuttonbn{{/str}}:</span>
                     <span>{{#userdate}} {{startedat}}, {{#str}} strftimetime, core_langconfig{{/str}} {{/userdate}}.</span>
                     <span class="status-message">{{statusmessage}}</span>
                 </div>
             {{/statusrunning}}
             {{^statusrunning}}
-                <div class="status-message">{{statusmessage}}</div>
+                <div class="alert alert-info">
+                    <span class="status-message">{{statusmessage}}</span>
+                </div>
             {{/statusrunning}}
-            <div class="conf-opening-time">
+            <div id="conf-times" class="py-2">
                 {{#openingtime}}
-                    <span class="conf-opening">
+                    <div class="conf-opening">
                         <span class="font-weight-bold">{{#str}}mod_form_field_openingtime, bigbluebuttonbn{{/str}}:</span>
                         {{#userdate}} {{.}}, {{#str}} strftimedaydatetime, langconfig {{/str}} {{/userdate}}
-                  </span>
+                    </div>
                 {{/openingtime}}
+                {{#startingtime}}
+                    <div class="conf-starting">
+                        <span class="font-weight-bold">{{#str}}mod_form_field_startingtime, bigbluebuttonbn{{/str}}:</span>
+                        {{#userdate}} {{.}}, {{#str}} strftimedaydatetime, langconfig {{/str}} {{/userdate}}
+                    </div>
+                {{/startingtime}}
                 {{#closingtime}}
                     <div class="conf-closing">
                         <span class="font-weight-bold">{{#str}}mod_form_field_closingtime, bigbluebuttonbn{{/str}}:</span>
@@ -87,6 +96,11 @@
                         </a>
                     {{/presentations}}
                 </div>
+                {{#hidepresentations}}
+                    <div class="alert alert-info">
+                        {{#str}}view_section_title_presentation_hidden, mod_bigbluebuttonbn{{/str}}
+                    </div>
+                {{/hidepresentations}}
             {{/haspresentations}}
         </div>
     </div>

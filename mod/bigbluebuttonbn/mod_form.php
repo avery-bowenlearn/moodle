@@ -84,7 +84,7 @@ class mod_bigbluebuttonbn_mod_form extends moodleform_mod {
         // Add block 'Guest Access'.
         $this->bigbluebuttonbn_mform_add_block_guest_access($mform, $cfg, $this->current);
         // Add block 'Schedule'.
-        $this->bigbluebuttonbn_mform_add_block_schedule($mform, $this->current);
+        $this->bigbluebuttonbn_mform_add_block_schedule($mform, $cfg, $this->current);
         // Add standard elements, common to all modules.
         $this->standard_coursemodule_elements();
         // Add standard buttons, common to all modules.
@@ -178,6 +178,11 @@ class mod_bigbluebuttonbn_mod_form extends moodleform_mod {
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
+        if (isset($data['calendareventoffset'])) {
+            if ($data['calendareventoffset'] < 0 || $data['calendareventoffset'] > 999) {
+                $errors['calendareventoffset'] = get_string('bbbinvalidcalendareventoffset', 'bigbluebuttonbn');
+            }
+        }
         if (isset($data['openingtime']) && isset($data['closingtime'])) {
             if ($data['openingtime'] != 0 && $data['closingtime'] != 0 &&
                 $data['closingtime'] < $data['openingtime']) {
@@ -344,6 +349,7 @@ class mod_bigbluebuttonbn_mod_form extends moodleform_mod {
             $this->bigbluebuttonbn_mform_add_element($mform, $field['type'], $field['name'], $field['data_type'],
                 $field['description_key'], 0, ['maxlength' => 4, 'size' => 6]);
         }
+
         $field = ['type' => 'hidden', 'name' => 'wait', 'data_type' => PARAM_INT, 'description_key' => null];
         if ($cfg['waitformoderator_editable']) {
             $field['type'] = 'checkbox';
@@ -547,10 +553,14 @@ class mod_bigbluebuttonbn_mod_form extends moodleform_mod {
      * @return void
      */
     private function bigbluebuttonbn_mform_add_block_preuploads(MoodleQuickForm &$mform, array $cfg): void {
-        if ($cfg['preuploadpresentation_editable']) {
+        // moved conditional for header from 'if ($cfg['preuploadpresentation_editable'])' to allow either
+        //  option being allowed to show this menu
+        if ($cfg['preuploadpresentation_editable'] || $cfg['hidepresentationfile_editable']) {
             $mform->addElement('header', 'preuploadpresentation',
                 get_string('mod_form_block_presentation', 'bigbluebuttonbn'));
             $mform->setExpanded('preuploadpresentation');
+        }
+        if ($cfg['preuploadpresentation_editable']) {
             $filemanageroptions = [];
             $filemanageroptions['accepted_types'] = '*';
             $filemanageroptions['maxbytes'] = 0;
@@ -560,6 +570,13 @@ class mod_bigbluebuttonbn_mod_form extends moodleform_mod {
             $mform->addElement('filemanager', 'presentation', get_string('selectfiles'),
                 null, $filemanageroptions);
         }
+        $field = ['type' => 'hidden', 'name' => 'hidepresentationfile', 'data_type' => PARAM_INT, 'description_key' => null];
+        if ($cfg['hidepresentationfile_editable']) {
+            $field['type'] = 'advcheckbox';
+            $field['description_key'] = 'mod_form_field_hide_presentation_file';
+        }
+        $this->bigbluebuttonbn_mform_add_element($mform, $field['type'], $field['name'], $field['data_type'],
+            $field['description_key'], $cfg['hidepresentationfile_default']);
     }
 
     /**
@@ -643,7 +660,7 @@ class mod_bigbluebuttonbn_mod_form extends moodleform_mod {
      * @param stdClass $activity
      * @return void
      */
-    private function bigbluebuttonbn_mform_add_block_schedule(MoodleQuickForm &$mform, stdClass &$activity) {
+    private function bigbluebuttonbn_mform_add_block_schedule(MoodleQuickForm &$mform, array &$cfg, stdClass &$activity) {
         $mform->addElement('header', 'schedule', get_string('mod_form_block_schedule', 'bigbluebuttonbn'));
         if (!empty($activity->openingtime) || !empty($activity->closingtime)) {
             $mform->setExpanded('schedule');
@@ -654,6 +671,20 @@ class mod_bigbluebuttonbn_mod_form extends moodleform_mod {
         $mform->addElement('date_time_selector', 'closingtime',
             get_string('mod_form_field_closingtime', 'bigbluebuttonbn'), ['optional' => true]);
         $mform->setDefault('closingtime', 0);
+        $field = ['type' => 'hidden', 'name' => 'calendareventoffset', 'data_type' => PARAM_INT, 'description_key' => null];
+        if ($cfg['calendareventoffset_editable']) {
+            $field['type'] = 'text';
+            $field['description_key'] = 'mod_form_field_calendareventoffset';
+        }
+        $this->bigbluebuttonbn_mform_add_element($mform, $field['type'], $field['name'], $field['data_type'],
+            $field['description_key'], $cfg['calendareventoffset_default']);
+        $field = ['type' => 'hidden', 'name' => 'moderatorscanjoinearly', 'data_type' => PARAM_INT, 'description_key' => null];
+        if ($cfg['moderatorscanjoinearly_editable']) {
+            $field['type'] = 'advcheckbox';
+            $field['description_key'] = 'mod_form_field_moderators_can_join_early';
+        }
+        $this->bigbluebuttonbn_mform_add_element($mform, $field['type'], $field['name'], $field['data_type'],
+            $field['description_key'], $cfg['moderatorscanjoinearly_default']);
     }
 
     /**

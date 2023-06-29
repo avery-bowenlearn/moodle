@@ -164,19 +164,37 @@ class mod_helper {
             return;
         }
 
+        // Creates the description detailing the time offset for the calendar event
+        if (empty($bigbluebuttonbn->calendareventoffset)) {
+            $bigbluebuttonbn->calendareventoffset = 0;
+        }
+        $timeoffset = $bigbluebuttonbn->calendareventoffset;
+        $timeoffsetdesc = "";
+        if ($timeoffset != 0) {
+            if ($timeoffset > 1) {
+                $timeoffsetdesc = get_string('calendareventoffset_description_minutes_early', 'bigbluebuttonbn', $timeoffset) . PHP_EOL;
+            } else if ($timeoffset == 1) {
+                $timeoffsetdesc = get_string('calendareventoffset_description_minute_early', 'bigbluebuttonbn') . PHP_EOL;
+            } else if ($timeoffset == -1) {
+                $timeoffsetdesc = get_string('calendareventoffset_description_minute_late', 'bigbluebuttonbn') . PHP_EOL;
+            } else if ($timeoffset < 1) {
+                $timeoffsetdesc = get_string('calendareventoffset_description_minutes_late', 'bigbluebuttonbn', $timeoffset * -1) . PHP_EOL;
+            }
+        }
+
         // Add event to the calendar as openingtime is set.
         $event = (object) [
             'eventtype' => logger::EVENT_MEETING_START,
             'type' => CALENDAR_EVENT_TYPE_ACTION,
             'name' => get_string('calendarstarts', 'bigbluebuttonbn', $bigbluebuttonbn->name),
-            'description' => format_module_intro('bigbluebuttonbn', $bigbluebuttonbn, $bigbluebuttonbn->coursemodule, false),
+            'description' => $timeoffsetdesc . format_module_intro('bigbluebuttonbn', $bigbluebuttonbn, $bigbluebuttonbn->coursemodule, false),
             'format' => FORMAT_HTML,
             'courseid' => $bigbluebuttonbn->course,
             'groupid' => 0,
             'userid' => 0,
             'modulename' => 'bigbluebuttonbn',
             'instance' => $bigbluebuttonbn->id,
-            'timestart' => $bigbluebuttonbn->openingtime,
+            'timestart' => $bigbluebuttonbn->openingtime + ($bigbluebuttonbn->calendareventoffset * 60),
             'timeduration' => 0,
             'timesort' => $bigbluebuttonbn->openingtime,
             'visible' => instance_is_visible('bigbluebuttonbn', $bigbluebuttonbn),

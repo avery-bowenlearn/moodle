@@ -99,6 +99,10 @@ class view_page implements renderable, templatable {
             if (!empty($roomdata->presentations)) {
                 $roomdata->haspresentations = true;
             }
+            $roomdata->hidepresentations = false;
+            if ($this->instance->get_instance_var('hidepresentationfile')) {
+                $roomdata->hidepresentations = true;
+            }
             $templatedata->room = $roomdata;
         }
 

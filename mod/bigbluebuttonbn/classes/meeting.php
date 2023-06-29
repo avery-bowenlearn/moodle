@@ -246,10 +246,17 @@ class meeting {
         ];
         if ($instance->get_instance_var('openingtime')) {
             $meetinginfo->openingtime = intval($instance->get_instance_var('openingtime'));
+            // get calendareventoffset
+            if ($instance->get_instance_var('calendareventoffset')) {
+                $meetinginfo->calendareventoffset = intval($instance->get_instance_var('calendareventoffset'));
+                $startingtime = intval($instance->get_instance_var('openingtime') + $instance->get_instance_var('calendareventoffset') * 60);
+                $meetinginfo->startingtime = $startingtime;
+            }
         }
         if ($instance->get_instance_var('closingtime')) {
             $meetinginfo->closingtime = intval($instance->get_instance_var('closingtime'));
         }
+        
         $activitystatus = bigbluebutton_proxy::view_get_activity_status($instance);
         // This might raise an exception if info cannot be retrieved.
         // But this might be totally fine as the meeting is maybe not yet created on BBB side.
@@ -257,6 +264,12 @@ class meeting {
         // This is the default value for any meeting that has not been created.
         $meetinginfo->statusrunning = false;
         $meetinginfo->createtime = null;
+
+        if (!empty($instance->get_instance_var('hidepresentationfile'))) {
+            $meetinginfo->hidepresentations = true;
+        } else {
+            $meetinginfo->hidepresentations = false;
+        }
 
         $info = self::retrieve_cached_meeting_info($this->instance->get_meeting_id(), $updatecache);
         if (!empty($info)) {
@@ -322,13 +335,17 @@ class meeting {
         if ($instance->has_user_limit_been_reached($meetinginfo->totalusercount)) {
             return get_string('view_message_conference_user_limit_reached', 'bigbluebuttonbn');
         }
-        if ($meetinginfo->statusrunning) {
+        if ($meetinginfo->statusrunning && !$instance->before_start_time()) {
             return get_string('view_message_conference_in_progress', 'bigbluebuttonbn');
         }
-        if ($instance->user_must_wait_to_join() && !$instance->user_can_force_join()) {
+        if ($meetinginfo->statusrunning && $instance->before_start_time()) {
+            return get_string('view_message_conference_wait_for_start_time', 'bigbluebuttonbn');
+            // return "". get_string('view_message_conference_wait_for_start_time', 'bigbluebuttonbn') . "";
+        }
+        if (!$instance->before_start_time() && !$instance->has_ended() && $instance->user_must_wait_to_join() && !$instance->user_can_force_join()) {
             return get_string('view_message_conference_wait_for_moderator', 'bigbluebuttonbn');
         }
-        if ($instance->before_start_time()) {
+        if ($instance->before_start_time() && !$instance->user_can_join_early()) {
             return get_string('view_message_conference_not_started', 'bigbluebuttonbn');
         }
         if ($instance->has_ended()) {
